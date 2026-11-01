@@ -42,6 +42,11 @@ if (isProduction && (!masterKey || masterKey.length < 16)) {
   throw new Error('SECRET_MASTER_KEY must be set to a strong value in production');
 }
 
+const proxyFromEnv = (primary: string, fallback?: string): string | undefined => {
+  const raw = process.env[primary] ?? process.env[primary.toLowerCase()] ?? fallback ?? process.env.ALL_PROXY;
+  return raw && raw.trim() ? raw.trim() : undefined;
+};
+
 export const config = {
   nodeEnv,
   isProduction,
@@ -62,6 +67,12 @@ export const config = {
   // SameSite cookie. This keeps desktop mode keyless for the user without
   // granting every process on the machine unauthenticated API access.
   desktopInstanceId: process.env.DESKTOP_INSTANCE_ID || undefined,
+  network: {
+    httpProxy: proxyFromEnv('HTTP_PROXY', process.env.http_proxy),
+    httpsProxy: proxyFromEnv('HTTPS_PROXY', process.env.https_proxy),
+    noProxy: process.env.NO_PROXY ?? process.env.no_proxy ?? '',
+    timeoutMs: int('NETWORK_TIMEOUT_MS', 30_000),
+  },
   // How often (minutes) the session keeper re-validates each account's
   // browser profile to keep iCloud cookies alive. 0 disables it.
   sessionRefreshMinutes: int('SESSION_REFRESH_MINUTES', 180),
