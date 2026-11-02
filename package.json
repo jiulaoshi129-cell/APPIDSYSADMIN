@@ -1,0 +1,42 @@
+{
+  "name": "icloud-hme-manager",
+  "version": "0.3.0",
+  "private": true,
+  "description": "iCloud Hide My Email multi-account management system (Electron desktop app for macOS & Windows)",
+  "workspaces": [
+    "iCloudEmail-BackEnd",
+    "iCloudEmail-FrontEnd",
+    "iCloudEmail-Desktop"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:server": "npm run dev --workspace @icloud-hme/server",
+    "dev:web": "npm run dev --workspace @icloud-hme/web",
+    "build": "npm run build --workspace @icloud-hme/server && npm run build --workspace @icloud-hme/web",
+    "start": "npm run start --workspace @icloud-hme/server",
+    "desktop": "npm run app --workspace @icloud-hme/desktop",
+    "package:mac": "npm run package:mac --workspace @icloud-hme/desktop",
+    "package:win": "npm run package:win --workspace @icloud-hme/desktop",
+    "dist:mac": "npm run dist:mac --workspace @icloud-hme/desktop",
+    "dist:win": "npm run dist:win --workspace @icloud-hme/desktop",
+    "check:metadata": "node scripts/check-project.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "lint": "eslint .",
+    "format": "prettier --write \"*.{json,mjs}\" \".github/**/*.yml\" \"scripts/**/*.{mjs,cjs}\" \"iCloudEmail-Desktop/**/*.{cjs,json}\" \"iCloudEmail-BackEnd/**/*.{json,ts}\" \"iCloudEmail-FrontEnd/**/*.{css,html,json,ts,tsx}\"",
+    "format:check": "prettier --check \"*.{json,mjs}\" \".github/**/*.yml\" \"scripts/**/*.{mjs,cjs}\" \"iCloudEmail-Desktop/**/*.{cjs,json}\" \"iCloudEmail-BackEnd/**/*.{json,ts}\" \"iCloudEmail-FrontEnd/**/*.{css,html,json,ts,tsx}\"",
+    "typecheck": "npm run typecheck --workspace @icloud-hme/server && npm run typecheck --workspace @icloud-hme/web",
+    "test": "npm run test --workspace @icloud-hme/server && npm run test --workspace @icloud-hme/web",
+    "check": "npm run check:metadata && npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
+    "audit:dependencies": "npm audit --audit-level=high"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "globals": "^16.5.0",
+    "prettier": "^3.8.2",
+    "typescript-eslint": "^8.56.1"
+  }
+}

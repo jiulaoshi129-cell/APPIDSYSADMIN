@@ -1,0 +1,89 @@
+{
+  "name": "@icloud-hme/desktop",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Local multi-account manager for iCloud Hide My Email",
+  "author": "LYH105",
+  "main": "main.cjs",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "electron .",
+    "build:deps": "npm run build --workspace @icloud-hme/server && npm run build --workspace @icloud-hme/web",
+    "app": "npm run build:deps && electron .",
+    "prepare:runtime": "node scripts/prepare-runtime.cjs",
+    "verify:runtime": "node scripts/verify-runtime.cjs",
+    "package:win": "npm run build:deps && npm run prepare:runtime && npm run verify:runtime && electron-builder --dir --win --x64",
+    "package:mac": "npm run build:deps && npm run prepare:runtime && npm run verify:runtime && electron-builder --dir --mac",
+    "dist:win": "npm run build:deps && npm run prepare:runtime && npm run verify:runtime && electron-builder --win nsis --x64",
+    "dist:mac": "npm run build:deps && npm run prepare:runtime && npm run verify:runtime && electron-builder --mac dmg zip"
+  },
+  "devDependencies": {
+    "electron": "44.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.icloud-hme.desktop",
+    "productName": "iCloud Email Manager",
+    "asar": true,
+    "electronFuses": {
+      "runAsNode": false,
+      "enableCookieEncryption": true,
+      "enableNodeOptionsEnvironmentVariable": false,
+      "enableNodeCliInspectArguments": false,
+      "enableEmbeddedAsarIntegrityValidation": true,
+      "onlyLoadAppFromAsar": true,
+      "grantFileProtocolExtraPrivileges": false
+    },
+    "npmRebuild": false,
+    "directories": {
+      "output": "../release"
+    },
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "files": [
+      "main.cjs",
+      "icon.ico",
+      "icon.png",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": ".runtime/server",
+        "to": "server"
+      },
+      {
+        "from": ".runtime/web",
+        "to": "web"
+      },
+      {
+        "from": ".runtime/node",
+        "to": "node"
+      }
+    ],
+    "win": {
+      "icon": "build-icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "icon": "build-icon.icns",
+      "category": "public.app-category.productivity",
+      "hardenedRuntime": true,
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    }
+  }
+}
